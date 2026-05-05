@@ -571,13 +571,14 @@ async function askBot() {
     chat.scrollTop = chat.scrollHeight;
 }
     </script>
-<!-- BOUTON IA ORIORIS (STYLÉ & UNIQUE) -->
-<button id="ia-toggle-btn" class="fixed bottom-6 right-6 w-14 h-14 bg-white border-2 border-accent rounded-full shadow-lg z-[1001] flex items-center justify-center hover:scale-110 transition-transform no-print overflow-hidden" onclick="toggleChat()">
-    <!-- Ton logo Orioris certifié -->
-    <img src="logo-ia-github.png" alt="Orioris" class="w-10 h-10 object-contain">
+<!-- BOUTON IA ORIORIS (OPTIMISÉ SANS OVERFLOW) -->
+<button id="ia-toggle-btn" class="fixed bottom-6 right-6 w-14 h-14 bg-[#1a1a1a] border-2 border-accent rounded-full shadow-lg z-[1001] flex items-center justify-center hover:scale-105 transition-transform no-print" onclick="toggleChat()">
     
-    <!-- LA PASTILLE DE STATUT (FEU TRICOLORE) -->
-    <span id="ia-status-dot" class="absolute top-0 right-0 w-4 h-4 bg-green-500 border-2 border-white rounded-full"></span>
+    <!-- Ton logo forcé en cercle parfait avec un léger padding -->
+    <img src="logo-ia-github.png" alt="Orioris" class="w-full h-full object-cover rounded-full p-1">
+    
+    <!-- LA PASTILLE DE STATUT (Libérée pour déborder correctement) -->
+    <span id="ia-status-dot" class="absolute -top-1 -right-1 w-4 h-4 bg-green-500 border-2 border-white rounded-full"></span>
 </button>
 </body>
 </html>
