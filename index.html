@@ -212,6 +212,38 @@
     </div>
 
     <div class="toolbar no-print">
+    <div class="flex items-center gap-3 mb-4 text-primary">
+        <i class="fas fa-cog fa-spin-slow"></i>
+        <h3 class="text-xs font-bold uppercase tracking-wider">Configuration</h3>
+    </div>
+    
+    <div class="space-y-4">
+        <!-- Sélecteur de Thème -->
+        <div>
+            <div class="theme-dot" style="background:#2c3e50" onclick="setTheme('modern')" title="Moderne"></div>
+            <div class="theme-dot" style="background:#fff" onclick="setTheme('classic')" title="ATS"></div>
+            <div class="theme-dot" style="background:#f4f4f4" onclick="setTheme('impact')" title="Impact"></div>
+        </div>
+
+        <button class="btn btn-secondary" onclick="toggleEdit()">
+            <i class="fas fa-pen text-xs"></i> <span id="edit-txt">Édition: ON</span>
+        </button>
+
+        <button class="btn btn-primary" onclick="window.print()">
+            <i class="fas fa-file-pdf"></i> PDF Pro
+        </button>
+        
+        <!-- LE TRUC PRO : STATUS IA -->
+        <div class="pt-2 border-t border-gray-100">
+            <label class="text-[10px] font-bold text-gray-400 uppercase">Status Infrastructure</label>
+            <select onchange="updateIAStatus(this.value)" class="w-full text-xs mt-1 p-1 border rounded cursor-pointer bg-gray-50">
+                <option value="ok">🟢 IA Opérationnelle</option>
+                <option value="busy">🟡 Maintenance LiteLLM</option>
+                <option value="off">🔴 Hors-ligne</option>
+            </select>
+        </div>
+    </div>
+</div>
         <h3 class="text-xs font-bold uppercase text-gray-400 mb-2">Style du CV</h3>
         <div>
             <div class="theme-dot" style="background:#2c3e50" onclick="setTheme('modern')" title="Moderne (Bleu/Beige)"></div>
