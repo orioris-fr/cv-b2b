@@ -143,19 +143,37 @@
         .theme-classic .proof-badge, .theme-impact .proof-badge { background: white; border: 1px solid #ddd; color: #333; }
         .theme-classic .proof-badge:hover, .theme-impact .proof-badge:hover { background: #f0f0f0; border-color: var(--accent); }
 
-        /* TOOLBAR & CHAT */
-        .toolbar { position: fixed; top: 20px; right: 20px; background: white; padding: 15px; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); z-index: 999; width: 220px; }
-        .btn { padding: 8px; border-radius: 4px; font-weight: 600; cursor: pointer; text-align: left; width: 100%; margin-bottom: 5px; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; }
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-secondary { background: #eee; color: #333; }
-        .theme-dot { width: 30px; height: 30px; border-radius: 50%; cursor: pointer; border: 2px solid #ddd; display: inline-block; margin-right: 5px; }
+        /* --- TOOLBAR DISCRÈTE (RELIÉE AU SURVOL) --- */
+.toolbar { 
+    position: fixed; top: 20px; right: 0px; 
+    background: white; padding: 15px; 
+    border-radius: 8px 0 0 8px; 
+    box-shadow: -4px 4px 20px rgba(0,0,0,0.15); 
+    z-index: 999; width: 220px;
+    transform: translateX(190px); /* Cache la barre à 90% */
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    opacity: 0.7;
+}
+.toolbar:hover { 
+    transform: translateX(0); /* S'affiche au survol */
+    opacity: 1;
+}
 
-        .chat-widget { position: fixed; bottom: 20px; right: 20px; width: 350px; background: white; border-radius: 10px; box-shadow: 0 5px 25px rgba(0,0,0,0.2); display: none; flex-direction: column; z-index: 1000; overflow: hidden; }
-        .chat-header { background: var(--primary); color: white; padding: 15px; font-weight: bold; display: flex; justify-content: space-between; }
-        .chat-body { height: 300px; padding: 15px; overflow-y: auto; background: #f8f9fa; }
-        .chat-msg { padding: 8px 12px; margin-bottom: 8px; border-radius: 8px; font-size: 0.9rem; max-width: 85%; }
-        .chat-msg.bot { background: white; border: 1px solid #ddd; align-self: flex-start; }
-        .chat-msg.user { background: var(--primary); color: white; align-self: flex-end; }
+.btn { padding: 8px; border-radius: 4px; font-weight: 600; cursor: pointer; text-align: left; width: 100%; margin-bottom: 5px; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; }
+.btn-primary { background: var(--primary); color: white; }
+.btn-secondary { background: #eee; color: #333; }
+.theme-dot { width: 30px; height: 30px; border-radius: 50%; cursor: pointer; border: 2px solid #ddd; display: inline-block; margin-right: 5px; }
+
+/* --- CHAT WIDGET (POSITION COCKPIT) --- */
+.chat-widget { 
+    position: fixed; bottom: 20px; right: 20px; 
+    width: 350px; background: white; 
+    border-radius: 12px; 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25); 
+    display: none; flex-direction: column; 
+    z-index: 1000; overflow: hidden;
+    border: 1px solid #ddd;
+}
     </style>
 </head>
 <body class="bg-gray-600">
