@@ -569,7 +569,7 @@ async function askBot() {
         const fullContext = `CONTEXTE CV:\n${contextCv}\n\nCONTEXTE KNOWLEDGE:\n${contextAssess}\n\nQUESTION: ${text}`;
 
       // NOUVEAU FLUX SÉCURISÉ : CLOUDFLARE WORKER PROXY (Mode Furtif)
-    const response = await fetch('https://proxy-cv-ia.patrice-vayne.workers.dev', {
+    const response = await fetch('https://ia.orioris.com', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
