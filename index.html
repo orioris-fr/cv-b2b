@@ -599,15 +599,14 @@ async function askBot() {
     input.value = '';
 
     try {
-        // RÉCUPÉRATION INSTANTANÉE (SANS FETCH)
+        // RÉCUPÉRATION DEPUIS TON ID HTML EN DUR
         const deepTruth = document.getElementById('bunker-truth-source').innerText;
         const contextCv = document.getElementById('app-container').innerText;
 
-        // ON LIMITE QUAND MÊME UN PEU POUR LA STABILITÉ DU WORKER
-        const fullContext = `
-        DOC VÉRITÉ : ${deepTruth.substring(0, 4000)}
-        CV VISUEL : ${contextCv.substring(0, 1500)}
-        `;
+        // --- ÉLAGAGE CHIRURGICAL (Anti-502) ---
+        // On ne prend que les 2000 premiers caractères (Forge 2022-2025 et TDAH)
+        const safeTruth = deepTruth.substring(0, 2000); 
+        const safeCv = contextCv.substring(0, 1000);
 
         const response = await fetch('https://ia.orioris.com', {
             method: 'POST',
@@ -617,24 +616,22 @@ async function askBot() {
                 messages: [
                     {
                         role: "system",
-                        content: "Tu es l'assistant de Patrice. RÉPONDS AVEC UNE CERTITUDE ABSOLUE via le DOC DE VÉRITÉ. Sois bref. " + fullContext
+                        content: `Assistant expert. Utilise ces faits : ${safeTruth} | CV : ${safeCv}`
                     },
                     { role: "user", content: text }
                 ]
             })
         });
 
-        if (!response.ok) throw new Error('Erreur Tunnel');
+        if (!response.ok) throw new Error('Saturation Worker 502');
 
         const data = await response.json();
-        const reply = data.choices[0].message.content;
-        
-        chat.innerHTML += `<div class="chat-msg bot">${linkify(reply)}</div>`;
+        chat.innerHTML += `<div class="chat-msg bot">${data.choices[0].message.content}</div>`;
         updateIAStatus('ok');
 
     } catch(e) {
         console.error(e);
-        chat.innerHTML += `<div class="chat-msg bot">Bunker saturé. Réduis la taille du doc de vérité.</div>`;
+        chat.innerHTML += `<div class="chat-msg bot">Bunker saturé. Volume de données réduit requis.</div>`;
         updateIAStatus('off');
     }
     chat.scrollTop = chat.scrollHeight;
