@@ -516,6 +516,10 @@ Ton rôle est de prouver la polyvalence de Patrice.
 </div>
 
     <script>
+        // ==========================================
+// 1. VARIABLE GLOBALE (Haut du script)
+// ==========================================
+let bunkerDeepMemory = "";
         // Gestion Thèmes
         function setTheme(name) {
             const container = document.getElementById('app-container');
@@ -589,59 +593,66 @@ async function askBot() {
     const text = input.value;
     if(!text) return;
     
-    // 1. ON ACTIVE LE MODE "RÉFLEXION" (JAUNE PULSANT)
+    // 1. ON ACTIVE LE MODE "RÉFLEXION"
     updateIAStatus('busy');
     
     const chat = document.getElementById('chat-messages');
     chat.innerHTML += `<div class="chat-msg user">${text}</div>`;
     input.value = '';
 
-   try {
+    try {
+        // --- ÉTAPE MINI-RAG : RÉCUPÉRATION DE LA MÉMOIRE PROFONDE ---
+        if (!bunkerDeepMemory) {
+            try {
+                const res = await fetch('https://orioris-fr.github.io/cv-b2b/analyse_pro.txt');
+                if (res.ok) {
+                    bunkerDeepMemory = await res.text();
+                    console.log("🧠 Mémoire Profonde chargée.");
+                }
+            } catch (e) {
+                console.error("Erreur RAG : Impossible de lire analyse_pro.txt");
+            }
+        }
+
         const contextCv = document.getElementById('app-container').innerText;
         const contextAssess = document.getElementById('ai-knowledge-base').innerText;
         
-        // --- AJOUT L'ACCÈS AU DÉPÔT GITHUB ICI ---
-        const gitKnowledge = `
-        DÉPÔT DE PREUVES (30+ fichiers) : https://github.com/orioris-fr/cv-b2b/
-        - Soft Skills : AssessFirst.pdf (Profil Promoteur)
-        - Preuves de travail : Dossier /rapports
-        - Maîtrise technique : Dossier /rendus-3d
+        // --- CONSTRUCTION DU CONTEXTE AVEC MÉMOIRE RÉELLE ---
+        const fullContext = `
+        DOCUMENT DE VÉRITÉ (ANALYSE PROFONDE) :
+        ${bunkerDeepMemory}
+
+        CONTEXTE VISUEL DU CV :
+        ${contextCv}
+
+        RÉSUMÉ KNOWLEDGE BASE :
+        ${contextAssess}
         `;
 
-        const fullContext = `CONTEXTE CV:\n${contextCv}\n\nCONTEXTE KNOWLEDGE:\n${contextAssess}\n\nINFRA PREUVES:\n${gitKnowledge}\n\nQUESTION: ${text}`;
+        // APPEL WORKER CLOUDFLARE
+        const response = await fetch('https://ia.orioris.com', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                model: "bunker-auto", 
+                messages: [
+                    {
+                        role: "system",
+                        content: "Tu es l'assistant expert de Patrice. RÉPONDS AVEC UNE CERTITUDE ABSOLUE en utilisant le 'DOCUMENT DE VÉRITÉ'. Ne fais aucune supposition, utilise les faits. " + fullContext
+                    },
+                    { role: "user", content: text }
+                ]
+            })
+        });
 
-      // NOUVEAU FLUX SÉCURISÉ : CLOUDFLARE WORKER PROXY
-    const response = await fetch('https://ia.orioris.com', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            model: "bunker-auto", 
-            messages: [
-                {
-                    role: "system",
-                    content: "Tu es l'assistant de Patrice. Basé sur ce contexte : " + fullContext
-                },
-                {
-                    role: "user",
-                    content: text // La question du recruteur
-                }
-            ]
-        })
-    });
         const data = await response.json();
-        
-        // NOUVELLE LECTURE DE LA RÉPONSE (Format universel)
         const reply = data.choices[0].message.content;
         chat.innerHTML += `<div class="chat-msg bot">${reply}</div>`;
         
-        // 2. RÉPONSE REÇUE (RETOUR AU VERT)
         updateIAStatus('ok');
 
     } catch(e) {
-        chat.innerHTML += `<div class="chat-msg bot">Erreur de connexion.</div>`;
-        // 3. ERREUR (VOYANT ROUGE)
+        chat.innerHTML += `<div class="chat-msg bot">Erreur de connexion au Bunker.</div>`;
         updateIAStatus('off');
     }
     chat.scrollTop = chat.scrollHeight;
