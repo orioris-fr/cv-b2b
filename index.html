@@ -592,44 +592,30 @@ async function askBot() {
     const input = document.getElementById('ai-input');
     const text = input.value;
     if(!text) return;
-    
+
     // 1. ON ACTIVE LE MODE "RÉFLEXION"
     updateIAStatus('busy');
-    
     const chat = document.getElementById('chat-messages');
     chat.innerHTML += `<div class="chat-msg user">${text}</div>`;
     input.value = '';
 
     try {
-        // --- ÉTAPE MINI-RAG : RÉCUPÉRATION DE LA MÉMOIRE PROFONDE ---
-        if (!bunkerDeepMemory) {
-            try {
-                const res = await fetch('https://orioris-fr.github.io/cv-b2b/analyse_pro.txt');
-                if (res.ok) {
-                    bunkerDeepMemory = await res.text();
-                    console.log("🧠 Mémoire Profonde chargée.");
-                }
-            } catch (e) {
-                console.error("Erreur RAG : Impossible de lire analyse_pro.txt");
-            }
-        }
+        // 1. LE "FACTEUR" : On va chercher le contenu brut sur GitHub
+        const responseGit = await fetch('https://orioris-fr.github.io/cv-b2b/analyse_pro.txt');
+        const contentAnalyzed = responseGit.ok ? await responseGit.text() : "Erreur de lecture du fichier source.";
 
         const contextCv = document.getElementById('app-container').innerText;
-        const contextAssess = document.getElementById('ai-knowledge-base').innerText;
-        
-        // --- CONSTRUCTION DU CONTEXTE AVEC MÉMOIRE RÉELLE ---
+
+        // 2. LE "REPAS" : On sert le texte sur un plateau à l'IA
         const fullContext = `
-        DOCUMENT DE VÉRITÉ (ANALYSE PROFONDE) :
-        ${bunkerDeepMemory}
+        SOURCES DE VÉRITÉ (Lecture directe) :
+        ${contentAnalyzed}
 
-        CONTEXTE VISUEL DU CV :
+        CONTEXTE VISUEL :
         ${contextCv}
-
-        RÉSUMÉ KNOWLEDGE BASE :
-        ${contextAssess}
         `;
 
-        // APPEL WORKER CLOUDFLARE
+        // 3. L'ENVOI AU WORKER
         const response = await fetch('https://ia.orioris.com', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -638,7 +624,7 @@ async function askBot() {
                 messages: [
                     {
                         role: "system",
-                        content: "Tu es l'assistant expert de Patrice. RÉPONDS AVEC UNE CERTITUDE ABSOLUE en utilisant le 'DOCUMENT DE VÉRITÉ'. Ne fais aucune supposition, utilise les faits. " + fullContext
+                        content: "Tu es l'assistant de Patrice. Tu AS ACCÈS aux données ci-dessous. Ne dis JAMAIS que tu n'as pas l'info. Analyse et réponds avec certitude : " + fullContext
                     },
                     { role: "user", content: text }
                 ]
@@ -647,14 +633,17 @@ async function askBot() {
 
         const data = await response.json();
         const reply = data.choices[0].message.content;
-        chat.innerHTML += `<div class="chat-msg bot">${reply}</div>`;
         
+        // Affichage avec support des liens (si ta fonction linkify est définie)
+        chat.innerHTML += `<div class="chat-msg bot">${linkify(reply)}</div>`;
         updateIAStatus('ok');
 
     } catch(e) {
-        chat.innerHTML += `<div class="chat-msg bot">Erreur de connexion au Bunker.</div>`;
+        chat.innerHTML += `<div class="chat-msg bot">Bunker hors ligne.</div>`;
         updateIAStatus('off');
     }
+
+    // --- LA LIGNE MANQUANTE EST ICI ---
     chat.scrollTop = chat.scrollHeight;
 }
     </script>
