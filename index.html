@@ -524,6 +524,8 @@ Ton rôle est de prouver la polyvalence de Patrice.
         }
 
         let editMode = false;
+        // Désactive l'édition sur tous les éléments au chargement
+document.querySelectorAll('[contenteditable]').forEach(el => el.contentEditable = false);
         function toggleEdit() {
             editMode = !editMode;
             document.querySelectorAll('[contenteditable]').forEach(el => el.contentEditable = editMode);
