@@ -606,13 +606,16 @@ async function askBot() {
 }
     </script>
 <!-- BOUTON IA ORIORIS (OPTIMISÉ SANS OVERFLOW) -->
-<button id="ia-toggle-btn" class="fixed bottom-6 right-6 w-14 h-14 bg-[#1a1a1a] border-2 border-accent rounded-full shadow-lg z-[1001] flex items-center justify-center hover:scale-105 transition-transform no-print" onclick="toggleChat()">
+<button id="ia-toggle-btn" class="fixed bottom-6 right-6 w-14 h-14 bg-[#1a1a1a] border-2 border-accent rounded-full shadow-lg z-[1001] flex items-center justify-center hover:scale-105 transition-transform no-print group" onclick="toggleChat()">
     
-    <!-- Ton logo forcé en cercle parfait avec un léger padding -->
-    <img src="logo-ia-github.png" alt="Orioris" class="w-full h-full object-cover rounded-full p-1">
+    <img src="logo-ia-github.png" alt="Assistant ORIORIS - Intelligence Souveraine" class="w-full h-full object-cover rounded-full p-1">
     
-    <!-- LA PASTILLE DE STATUT (Libérée pour déborder correctement) -->
     <span id="ia-status-dot" class="absolute -top-1 -right-1 w-4 h-4 bg-green-500 border-2 border-white rounded-full"></span>
+    
+    <span class="absolute bottom-16 right-0 w-max bg-gray-800 text-white text-xs px-3 py-1.5 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-md border border-gray-600">
+        Analyser mon profil avec l'IA
+    </span>
+
 </button>
 </body>
 </html>
