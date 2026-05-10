@@ -599,14 +599,22 @@ async function askBot() {
     input.value = '';
 
     try {
-        // RÉCUPÉRATION DEPUIS TON ID HTML EN DUR
+        // ON RÉCUPÈRE LE RÉSERVOIR QUE TU VIENS DE CRÉER
         const deepTruth = document.getElementById('bunker-truth-source').innerText;
-        const contextCv = document.getElementById('app-container').innerText;
-
-        // --- ÉLAGAGE CHIRURGICAL (Anti-502) ---
-        // On ne prend que les 2000 premiers caractères (Forge 2022-2025 et TDAH)
-        const safeTruth = deepTruth.substring(0, 2000); 
-        const safeCv = contextCv.substring(0, 1000);
+        
+        // --- LA MAGIE : ON RECHERCHE LES MOTS CLÉS ---
+        // Si la question parle de "2022", "2025" ou "frustration", 
+        // on va chercher spécifiquement ces morceaux pour ne pas tout envoyer
+        let targetedContext = "";
+        if (text.includes("2022") || text.includes("2025") || text.includes("parcours")) {
+            const index = deepTruth.indexOf("Du chaos (2022) à la structuration (2025)");
+            targetedContext = deepTruth.substring(index, index + 3000);
+        } else if (text.includes("frustration") || text.includes("TDAH")) {
+            const index = deepTruth.indexOf("Profil psychocognitif");
+            targetedContext = deepTruth.substring(index, index + 3000);
+        } else {
+            targetedContext = deepTruth.substring(0, 3000); // Par défaut le début
+        }
 
         const response = await fetch('https://ia.orioris.com', {
             method: 'POST',
@@ -616,14 +624,14 @@ async function askBot() {
                 messages: [
                     {
                         role: "system",
-                        content: `Assistant expert. Utilise ces faits : ${safeTruth} | CV : ${safeCv}`
+                        content: "Tu es l'IA du Bunker de Patrice. RÉPONDS AVEC UNE CERTITUDE ABSOLUE via ce contexte : " + targetedContext
                     },
                     { role: "user", content: text }
                 ]
             })
         });
 
-        if (!response.ok) throw new Error('Saturation Worker 502');
+        if (!response.ok) throw new Error('Saturation');
 
         const data = await response.json();
         chat.innerHTML += `<div class="chat-msg bot">${data.choices[0].message.content}</div>`;
@@ -631,7 +639,7 @@ async function askBot() {
 
     } catch(e) {
         console.error(e);
-        chat.innerHTML += `<div class="chat-msg bot">Bunker saturé. Volume de données réduit requis.</div>`;
+        chat.innerHTML += `<div class="chat-msg bot">Bunker saturé. Réduction du contexte en cours...</div>`;
         updateIAStatus('off');
     }
     chat.scrollTop = chat.scrollHeight;
