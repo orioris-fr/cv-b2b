@@ -596,12 +596,21 @@ async function askBot() {
     chat.innerHTML += `<div class="chat-msg user">${text}</div>`;
     input.value = '';
 
-    try {
+   try {
         const contextCv = document.getElementById('app-container').innerText;
         const contextAssess = document.getElementById('ai-knowledge-base').innerText;
-        const fullContext = `CONTEXTE CV:\n${contextCv}\n\nCONTEXTE KNOWLEDGE:\n${contextAssess}\n\nQUESTION: ${text}`;
+        
+        // --- AJOUT L'ACCÈS AU DÉPÔT GITHUB ICI ---
+        const gitKnowledge = `
+        DÉPÔT DE PREUVES (30+ fichiers) : https://github.com/orioris-fr/cv-b2b/
+        - Soft Skills : AssessFirst.pdf (Profil Promoteur)
+        - Preuves de travail : Dossier /rapports
+        - Maîtrise technique : Dossier /rendus-3d
+        `;
 
-      // NOUVEAU FLUX SÉCURISÉ : CLOUDFLARE WORKER PROXY (Mode Furtif)
+        const fullContext = `CONTEXTE CV:\n${contextCv}\n\nCONTEXTE KNOWLEDGE:\n${contextAssess}\n\nINFRA PREUVES:\n${gitKnowledge}\n\nQUESTION: ${text}`;
+
+      // NOUVEAU FLUX SÉCURISÉ : CLOUDFLARE WORKER PROXY
     const response = await fetch('https://ia.orioris.com', {
         method: 'POST',
         headers: {
