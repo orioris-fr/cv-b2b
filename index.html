@@ -598,30 +598,27 @@ async function askBot() {
     chat.innerHTML += `<div class="chat-msg user">${text}</div>`;
     input.value = '';
 
-    // 1. Extraction du contexte depuis le div caché
-    const systemContext = document.getElementById('ai-knowledge-base').innerText;
-
     try {
+        // La question part vers le Webhook n8n
         const response = await fetch('https://api.orioris.com/webhook/question-cv-patrice', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                model: "bunker-auto", 
-                messages: [
-                    // 2. Injection du contexte en tant que directive système
-                    { role: "system", content: systemContext }, 
-                    // 3. La question de l'utilisateur
-                    { role: "user", content: text }
-                ]
+                question: text // On n'envoie QUE la question
             })
         });
 
         const data = await response.json();
-        chat.innerHTML += `<div class="chat-msg bot">${data.choices[0].message.content}</div>`;
+        
+        // n8n renvoie la réponse de l'Agent IA (vérifie si c'est data.output ou data.text selon ton nœud n8n)
+        const iaResponse = data.output || data.text || "Message reçu par le Bunker.";
+        
+        chat.innerHTML += `<div class="chat-msg bot">${iaResponse}</div>`;
         updateIAStatus('ok');
 
     } catch(e) {
-        chat.innerHTML += `<div class="chat-msg bot">Bunker hors-ligne.</div>`;
+        console.error("Erreur Bunker :", e);
+        chat.innerHTML += `<div class="chat-msg bot">Bunker hors-ligne ou bloqué par CORS.</div>`;
         updateIAStatus('off');
     }
     chat.scrollTop = chat.scrollHeight;
