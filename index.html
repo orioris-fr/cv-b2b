@@ -598,7 +598,8 @@ async function askBot() {
         const data = await response.json();
         
         const iaResponse = data.output || data.text || "Message reçu par le Bunker.";
-        chat.innerHTML += `<div class="chat-msg bot">${iaResponse}</div>`;
+        const formattedResponse = marked.parse(iaResponse);
+        chat.innerHTML += `<div class="bg-white border border-gray-200 p-3 rounded-lg rounded-tl-none shadow-sm text-gray-800 markdown-body">${formattedResponse}</div>`;
         updateIAStatus('ok');
 
     } catch(e) {
