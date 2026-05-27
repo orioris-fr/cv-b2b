@@ -7,6 +7,9 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+<!-- Moteur Markdown & Style GitHub -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.5.0/github-markdown.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
     <style>
         :root {
@@ -186,6 +189,17 @@
     50% { transform: scale(1.2); opacity: 0.7; }
     100% { transform: scale(1); opacity: 1; }
 }
+/* --- OVERRIDE MARKDOWN GITHUB POUR LE CHAT --- */
+.markdown-body {
+    background-color: transparent !important;
+    font-family: inherit !important;
+    font-size: inherit !important;
+    color: inherit !important;
+}
+.markdown-body p { margin-bottom: 0.5em !important; }
+.markdown-body ul { list-style-type: disc !important; padding-left: 1.5em !important; }
+.markdown-body pre { background-color: #f6f8fa !important; border-radius: 6px; padding: 10px; }
+.markdown-body code { font-size: 0.85em; background-color: rgba(175, 184, 193, 0.2); padding: 0.2em 0.4em; border-radius: 6px; }
     </style>
 </head>
 <body class="bg-gray-600">
