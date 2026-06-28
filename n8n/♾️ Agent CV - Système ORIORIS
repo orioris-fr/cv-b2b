@@ -1,0 +1,46 @@
+---
+titre: question-cv-orioris
+date_creation: 2026-05-28 19:00
+statut: Prod
+type: Agent, RAG
+version_n8n: 2.20.7-exp.0
+tags: SYSTEME/n8n, SYSTEME/Workflows, PROJET/CV
+---
+
+# ♾️ Agent CV - Système ORIORIS
+
+---
+
+## 🎯 Objectif Principal (Focus)
+
+> **Résumé**
+> Agent IA conversationnel agissant comme un clone numérique pour répondre aux questions des recruteurs/clients en exploitant une base vectorielle RAG. Il est conçu pour orienter la discussion sur les performances business et l'architecture technique du candidat.
+
+---
+
+## 🏗️ Architecture Logique (VSL)
+
+```mermaid
+graph TD
+    subgraph "Entrée (Frontend)"
+        A[Webhook POST <br> /question-cv]
+    end
+
+    subgraph "Moteur Cognitif (n8n_bunker)"
+        B{AI Agent}
+        C([OpenAI Model <br> bunker-auto]) -.->|Cerveau| B
+        D([Simple Memory]) -.->|Contexte de Session| B
+    end
+
+    subgraph "Base de Connaissances (RAG)"
+        E[(Qdrant Vector Store <br> bunker-nomic-768)] <-->|Recherche Top 4| B
+        F([Ollama Embeddings <br> nomic-embed-text]) -.->|Vectorisation| E
+    end
+
+    A --> B
+    B -->|Réponse formatée| G[Sortie HTTP]
+    
+    style B fill:#3742fa,stroke:#333,stroke-width:2px,color:#fff
+    style A fill:#eccc68,stroke:#333,stroke-width:2px,color:#111
+    style E fill:#2ed573,stroke:#333,stroke-width:2px,color:#111
+```
