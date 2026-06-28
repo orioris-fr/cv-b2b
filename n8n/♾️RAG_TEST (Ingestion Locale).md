@@ -56,13 +56,10 @@ graph TD
 
 ---
 
-## 🔑 Sécurité & Accès (Credentials)
-Liste stricte des accès requis pour éviter les erreurs 401 au lancement. (IDs sanitisés pour l'exposition publique)
-Nœud / Outil        Type d'Auth        Variable / Clé
-***Qdrant Vector Store  Header Auth   Qdrant account (***)
-***Ollama Embeddings     Local API   Ollama Bunker Local (***)
 
-📦 Sauvegarde Technique (Le Code)JSON{
+## 📦 Sauvegarde Technique (Le Code)JSON{
+  
+ ```json 
   "nodes": [
     {
       "parameters": {
@@ -203,3 +200,4 @@ Nœud / Outil        Type d'Auth        Variable / Clé
     }
   },
   "pinData": {}
+```
